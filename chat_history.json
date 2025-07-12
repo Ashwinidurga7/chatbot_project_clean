@@ -1,0 +1,42 @@
+[
+  {
+    "user": "hi",
+    "bot": "Hi there! How can I help you today?\n"
+  },
+  {
+    "user": "hi",
+    "bot": "Hi there! How can I help you today?\n"
+  },
+  {
+    "user": "hi",
+    "bot": "Hi there! How can I help you today?\n"
+  },
+  {
+    "user": "hi",
+    "bot": "Hi there! How can I help you today?\n"
+  },
+  {
+    "user": "hi",
+    "bot": "Hi there! How can I help you today?"
+  },
+  {
+    "user": "what is the capital of india",
+    "bot": "The capital of India is **New Delhi**."
+  },
+  {
+    "role": "user",
+    "message": "hello"
+  },
+  {
+    "role": "bot",
+    "message": "Hello there! How can I help you today?"
+  },
+  {
+    "role": "user",
+    "message": "hello"
+  },
+  {
+    "role": "bot",
+    "message": "Hello there! How can I help you today?"
+  }
+]
