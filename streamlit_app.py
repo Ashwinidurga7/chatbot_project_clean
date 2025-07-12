@@ -1,36 +1,60 @@
-# streamlit_app.py
-
+import os
 import streamlit as st
 import google.generativeai as genai
-import os
+from dotenv import load_dotenv
 
-api_key = os.getenv("GEMINI_API_KEY")
-if not api_key:
-    st.error("❌ GEMINI_API_KEY not set. Please add in Settings → Secrets")
+# Load .env for local development
+load_dotenv()
+
+# Set up Gemini API key
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    st.error("GEMINI_API_KEY not found. Please set it in Streamlit Cloud secrets or your local .env file.")
     st.stop()
 
-genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-pro')
+genai.configure(api_key=GEMINI_API_KEY)
 
-st.set_page_config(page_title="Gemini Chatbot")
-st.title("🤖 Gemini Chatbot")
+# Initialize chat history
+if "history" not in st.session_state:
+    st.session_state.history = []
+if "chat" not in st.session_state:
+    st.session_state.chat = genai.GenerativeModel("gemini-pro").start_chat()
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+# Streamlit UI
+st.set_page_config(page_title="Gemini Chatbot", layout="centered")
+st.title("💬 Gemini Chatbot")
+st.caption("Powered by Google's Gemini API")
 
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-
-if prompt := st.chat_input("Ask anything..."):
-    st.chat_message("user").markdown(prompt)
-    st.session_state.messages.append({"role": "user", "content": prompt})
-
+# Display chat history
+for item in st.session_state.history:
+    with st.chat_message("user"):
+        st.markdown(item["user"])
     with st.chat_message("assistant"):
-        response = model.generate_content(prompt)
-        reply = response.text
-        st.markdown(reply)
-    st.session_state.messages.append({"role": "assistant", "content": reply})
+        st.markdown(item["bot"])
+
+# User input
+prompt = st.chat_input("Type your message...")
+if prompt:
+    # Show user message
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # Send to Gemini and get response
+    try:
+        response = st.session_state.chat.send_message(prompt)
+        bot_reply = response.text
+    except Exception as e:
+        bot_reply = f"❌ Error: {str(e)}"
+
+    # Show bot reply
+    with st.chat_message("assistant"):
+        st.markdown(bot_reply)
+
+    # Save to history
+    st.session_state.history.append({"user": prompt, "bot": bot_reply})
+
+# Trigger rebuild - Gemini setup confirmed
+
 
 
 
